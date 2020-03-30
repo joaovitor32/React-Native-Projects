@@ -1,13 +1,21 @@
 import React from 'react'
-import { View, Text, StyleSheet,Button } from 'react-native'
+import { View, Text, StyleSheet,Button ,Image} from 'react-native'
+
+import BodyText from '../components/BodyText';
+import MainButton from '../components/MainButton'
 
 const GameOverScreen = props => {
     return (
         <View style={styles.screen}>
-            <Text>The Game is over!</Text>
-            <Text>Number of rounds: {props.roundsNumber}</Text>
-            <Text>The number was: {props.roundsNumber}</Text>
-            <Button title="New Game" onPress={props.onRestart}/>
+            <BodyText>The Game is over!</BodyText>
+            <Image 
+                style={styles.image} 
+                source={require('../assets/sucess.png')}
+                resizeMode="cover"
+            />
+            <BodyText>Number of rounds: {props.roundsNumber}</BodyText>
+            <BodyText>The number was: {props.roundsNumber}</BodyText>
+            <MainButton  onPress={props.onRestart}>New Game</MainButton>
         </View>
     )
 }
@@ -17,6 +25,10 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: "center"
+    },
+    image:{
+        width:"80%",
+        height:300,
     }
 })
 
