@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, Button, Alert, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, Button, Alert, ScrollView,FlatList,Dimensions } from 'react-native'
 
 import NumberContainer from '../components/NumberContainer'
 import Card from '../components/Card'
@@ -18,6 +18,13 @@ const generatedRandomBetween = (min, max, exclude) => {
     }
 }
 
+const renderListItem = (listLength, itemData) => (
+    <View style={styles.listItem}>
+        <BodyText>#{listLength - itemData.index}</BodyText>
+        <BodyText>{itemData.item}</BodyText>
+    </View>
+);
+
 const GameScreen = props => {
     const initialGuest = generatedRandomBetween(1, 100, props.userChoice);
     const [currentGuess, setCurrentGuess] = useState(
@@ -27,12 +34,6 @@ const GameScreen = props => {
     const currentLow = useRef(1);
     const currentHigh = useRef(100)
 
-    const renderListItem = (value,position) => {
-        <View style={styles.listItem} key={value}>
-            <BodyText>#{position}</BodyText>
-            <BodyText>{value}</BodyText>
-        </View>
-    }
 
     const { userChoice, onGameOver } = props;
 
@@ -77,12 +78,18 @@ const GameScreen = props => {
                     onPress={nextGuessHandler.bind(this, 'greater')}
                 ><Ionicons color="white" size={24} name="md-add" /></MainButton>
             </Card>
-            <View style={styles.list}>
+            {/*  <View style={styles.list}>
                 <ScrollView>
                     {pastGuesses.map((guess,index) => renderListItem(guess,pastGuesses.length-index))}
                 </ScrollView>
-            </View>
-        </View>
+            </View>*/}
+            <FlatList
+                keyExtractor={item => item.toString()}
+                data={pastGuesses}
+                renderItem={renderListItem.bind(this, pastGuesses.length)}
+                contentContainerStyle={styles.list}
+            />
+        </View >
     )
 }
 
@@ -95,12 +102,12 @@ const styles = StyleSheet.create({
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-        marginTop: 20,
-        width: 400,
+        marginTop: Dimensions.get('window').height>600?20:5,
+        width: "100%",
         maxWidth: '90%'
     },
     list: {
-        flex:1,
+        flex: 1,
         width: "80%",
     },
     listItem: {
@@ -108,9 +115,10 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         padding: 15,
         marginVertical: 10,
-        backgroundColor: "white",
-        flexDirection: "row",
-        justifyContent:"space-between"
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '80%'
     }
 })
 
