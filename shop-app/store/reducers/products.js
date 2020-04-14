@@ -1,17 +1,24 @@
 import PRODUCTS from '../../data/data'
-import { DELETE_PRODUCT, CREATE_PRODUCT, UPDATE_PRODUCT, updateProduct } from '../actions/product'
+import { DELETE_PRODUCT, CREATE_PRODUCT, UPDATE_PRODUCT, SET_PRODUCTS } from '../actions/product'
 import Product from '../../models/product'
 
 const initialState = {
-  avaiableProducts: PRODUCTS,
-  userProducts: PRODUCTS.filter(prod => prod.ownerId == "u1")
-}
+  avaiableProducts:[],
+  userProducts:[],
+};
 
-export default (state = initialState, action) => {
+
+export default (state=initialState , action) => {
   switch (action.type) {
+    case SET_PRODUCTS:
+      return {
+        avaiableProducts:action.products,
+        userProducts:action.products.filter(prod=>prod.ownerId==="u1")
+
+      }
     case CREATE_PRODUCT:
       const newProduct = new Product(
-        new Date().toString(),
+        action.productData.id,
         'u1',
         action.productData.title,
         action.productData.imageUrl,
@@ -24,6 +31,7 @@ export default (state = initialState, action) => {
         userProducts: state.userProducts.concat(newProduct)
       }
     case UPDATE_PRODUCT:
+      
       const productIndex = state.userProducts.findIndex(
         prod => prod.id === action.pid
       );

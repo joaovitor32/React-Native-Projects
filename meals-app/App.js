@@ -10,6 +10,7 @@ import {enableScreens} from 'react-native-screens'
 
 import {createStore,combineReducers} from 'redux'
 
+
 import mealsReducer from './store/reducers/meals'
 
 import {Provider} from 'react-redux'
