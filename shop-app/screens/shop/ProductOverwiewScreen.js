@@ -18,17 +18,17 @@ const ProductsOverviewScreen = props => {
     const [error, setError] = useState(undefined);
     const products = useSelector(state => state.products.avaiableProducts);
     const dispatch = useDispatch();
-
+    const [refreshing,setRefreshing]=useState(false)
 
     const loadedProducts =  useCallback(async() => {
         setError(null)
-        setLoading(true);
+        setRefreshing(true)
         try {
             await dispatch(productsActions.fetchProducts());
         } catch (err) {
             setError(err.message)
         }
-        setLoading(false)
+        setRefreshing(false)
     },[dispatch,setLoading,setError]);
 
     const selectItemHandler = (id, title) => {
@@ -41,10 +41,13 @@ const ProductsOverviewScreen = props => {
         )
     }
 
-    /*useEffect(() => {
-        loadedProducts();
-    }, [loadedProducts])*/
-
+    useEffect(() => {
+        setLoading(true);
+        loadedProducts().then(
+            setLoading(false)
+        );
+      }, [dispatch, loadedProducts]);
+    
     useEffect(()=>{
         const willFocusSub=props.navigation.addListener('willFocus',()=>{
             loadedProducts();
@@ -77,6 +80,8 @@ const ProductsOverviewScreen = props => {
     }
 
     return <FlatList
+        onRefresh={loadedProducts}
+        refreshing={refreshing}
         data={products}
         keyExtractor={item => item.id}
         renderItem={itemData => (
