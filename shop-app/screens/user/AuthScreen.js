@@ -1,11 +1,13 @@
-import React, { useReducer, useCallback } from 'react'
+import React, { useState, useEffect, useReducer, useCallback } from 'react'
 import {
     ScrollView,
     View,
     KeyboardAvoidingView,
     Text,
     StyleSheet,
-    Button
+    Button,
+    ActivityIndicator,
+    Alert
 } from 'react-native'
 
 import { LinearGradient } from 'expo-linear-gradient'
@@ -44,6 +46,10 @@ const formReducer = (state, action) => {
 
 const AuthScreen = props => {
 
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(undefined)
+    const [isSignup, setIsSignup] = useState(false);
+
     const [formState, dispatchFormState] = useReducer(formReducer, {
         inputValues: {
             email: "",
@@ -58,22 +64,46 @@ const AuthScreen = props => {
 
     const dispatch = useDispatch();
 
-    const signupHandler = () => {
-        dispatch(authAction.signup(
-            formState.inputValues.email,
-            formState.inputValues.password
-        )
-        )
-    }
+
+    const authHandler = async () => {
+        let action;
+        if (isSignup) {
+            action = authAction.signup(
+                formState.inputValues.email,
+                formState.inputValues.password
+            );
+        } else {
+            action = authAction.login(
+                formState.inputValues.email,
+                formState.inputValues.password
+            );
+        }
+        setError(null);
+        setIsLoading(true);
+        try {
+            await dispatch(action);
+            props.navigation.navigate('Shop')
+        } catch (err) {
+            setError(err.message);
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (error) {
+            Alert.alert('An error occurred!', error,
+                [{ text: "Ok" }])
+        }
+    }, [error])
 
     const inputChangeHandler = useCallback((inputIdentifier, inputValue, inputValidity) => {
         dispatchFormState({
-            type:FORM_INPUT_UPDATE,
-            value:inputValue,
-            isValid:inputValidity,
-            input:inputIdentifier
+            type: FORM_INPUT_UPDATE,
+            value: inputValue,
+            isValid: inputValidity,
+            input: inputIdentifier
         })
-    },[dispatchFormState])
+    }, [dispatchFormState])
 
     return (
         <KeyboardAvoidingView behaviour="padding" KeyboardVerticalOffset={50} style={styles.screen}>
@@ -107,9 +137,22 @@ const AuthScreen = props => {
                             initialValue=""
                         />
                         <View style={styles.buttonContainer}>
-                            <Button title="Login" color={Colors.primary} onPress={signupHandler} />
+                            <Button
+                                title={isSignup ? "Sign Up" : "Login"}
+                                color={Colors.primary}
+                                onPress={authHandler}
+                            />
                         </View>
-                        <Button title="Switch to Sign Up" color={Colors.accent} onPress={() => { }} />
+                        {isLoading ? (<ActivityIndicator
+                            size="small"
+                            color={Colors.primary}
+                        />) : (<Button
+                            title={`Switch to ${isSignup ? "Login" : "Sign Up"}`}
+                            color={Colors.accent}
+                            onPress={() => {
+                                setIsSignup(prevState => !prevState)
+                            }} />)
+                        }
                     </ScrollView>
                 </Card>
             </LinearGradient>

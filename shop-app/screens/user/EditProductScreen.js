@@ -70,13 +70,13 @@ const EditProductScreen = props => {
         formIsValid: editedProduct ? true : false
     });
 
-    useEffect(()=>{
-        if(error){
-            Alert.alert("An error occurred:",error.message,[{
-                text:"Okay"
+    useEffect(() => {
+        if (error) {
+            Alert.alert("An error occurred:", error.message, [{
+                text: "Okay"
             }])
         }
-    },[error])
+    }, [error])
 
     const submitHandler = useCallback(async () => {
         if (!formState.formIsValid) {
@@ -87,6 +87,7 @@ const EditProductScreen = props => {
         }
         setError(null);
         setLoading(false);
+        console.log(formState.inputValues.title)
         try {
             if (editedProduct) {
                 await dispatch(
@@ -113,7 +114,7 @@ const EditProductScreen = props => {
         }
 
         setLoading(false)
-    
+
     }, [dispatch, prodId, formState]);
 
     useEffect(() => {
@@ -132,9 +133,9 @@ const EditProductScreen = props => {
         [dispatchFormState]
     );
 
-    if(isLoading){
+    if (isLoading) {
         return (<View>
-            <ActivityIndicator 
+            <ActivityIndicator
                 size="large"
                 style={styles.centered}
                 color={Colors.primary}
@@ -226,10 +227,10 @@ const styles = StyleSheet.create({
     form: {
         margin: 20
     },
-    centered:{
-        flex:1,
-        justifyContent:"center",
-        alignItems:"center"
+    centered: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center"
     }
 });
 

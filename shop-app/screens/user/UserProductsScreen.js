@@ -1,5 +1,5 @@
 import React from 'react'
-import { FlatList, Platform, Button, Alert } from 'react-native'
+import { FlatList, Platform, StyleSheet, View, Text, Button, Alert } from 'react-native'
 
 import Colors from '../../constants/Colors'
 import { useSelector, useDispatch } from 'react-redux'
@@ -24,11 +24,21 @@ const UserProductsScreen = props => {
             [
                 { text: "No", style: "default" },
                 {
-                    text: "Yes", style:"destructive", onPress: () => {
+                    text: "Yes", style: "destructive", onPress: () => {
                         dispatch(productsActions.deleteProduct(id));
                     }
                 }
             ])
+    }
+
+    if (userProducts.length == 0) {
+        return (
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                <Text>
+                    No products found, maybe creating some?
+                    </Text>
+            </View>
+        )
     }
 
     return (<FlatList
@@ -45,7 +55,7 @@ const UserProductsScreen = props => {
             <Button color={Colors.primary} title="Edit" onPress={() => {
                 editProductHandler(itemData.item.id)
             }} />
-            <Button color={Colors.primary} title="Delete" onPress={deleteHandler.bind(this,itemData.item.id)} />
+            <Button color={Colors.primary} title="Delete" onPress={deleteHandler.bind(this, itemData.item.id)} />
         </ProductItem>}
     />
     )
