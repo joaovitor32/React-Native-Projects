@@ -15,7 +15,9 @@ export default (state=initialState,action)=>{
             const newPlace=new Place(
                 action.placeData.id.toString(),
                 action.placeData.title,
-                action.placeData.imageUri   
+                action.placeData.imageUri,
+                action.placeData.coords.lat,
+                action.placeData.coords.lng
             );
             return {
                 places:state.places.concat(newPlace)
