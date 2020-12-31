@@ -4,7 +4,7 @@ React Native Course By Udemy - Maximilian Schwarzmüller
 ## Como executar
 
 ### Mobile
-1. Acesse a pasta `mobile` e execute `yarn`;
+1. Acesse a qualquer pasta e execute `yarn`;
 
 2. Abra um emulador Android;
 
